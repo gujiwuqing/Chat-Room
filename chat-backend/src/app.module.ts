@@ -3,6 +3,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './user/user.module';
+import { EmailModule } from './email/email.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -17,6 +19,8 @@ import { UserModule } from './user/user.module';
       synchronize: true,
     }),
     UserModule,
+    EmailModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],
