@@ -9,10 +9,11 @@ import {
   Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { RegisterUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RedisService } from '../redis/redis.service';
 import { EmailService } from '../email/email.service';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 function generateRandomCode(length = 6) {
   const characters =
@@ -24,11 +25,7 @@ function generateRandomCode(length = 6) {
   }
   return code;
 }
-
-// 使用示例
-const verificationCode = generateRandomCode();
-console.log('随机验证码:', verificationCode);
-
+@ApiTags('用户')
 @Controller('user')
 export class UserController {
   constructor(
@@ -36,12 +33,18 @@ export class UserController {
     private readonly redisService: RedisService,
     private readonly emailService: EmailService,
   ) {}
-
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
+  @ApiOperation({
+    summary: '用户注册',
+    description: '创建一个新用户的接口，包含注册逻辑',
+  })
+  @Post('/register')
+  create(@Body() createUserDto: RegisterUserDto) {
     return this.userService.create(createUserDto);
   }
-
+  @ApiOperation({
+    summary: '用户注册的验证码',
+    description: '用户注册的验证码',
+  })
   @Post('/register/email/send')
   async sendRegisterEmail(@Query('path') path: string) {
     const code = generateRandomCode();
